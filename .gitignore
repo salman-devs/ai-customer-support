@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv/
+*.egg-info/
+
+# Environment variables
+.env
+backend/.env
+
+# Database
+*.db
+*.sqlite3
+
+# Vector DB storage
+chroma_db/
+backend/chroma_db/
+
+# Node / React
+node_modules/
+frontend/dist/
+frontend/build/
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+
+# Alembic
+backend/alembic/__pycache__/
