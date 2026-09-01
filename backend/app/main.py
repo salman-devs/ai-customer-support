@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.routers.auth import router as auth_router
 from app.routers.users import router as users_router
+from app.routers.documents import router as documents_router
 
 
 app = FastAPI(
@@ -13,6 +14,7 @@ app = FastAPI(
 
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(documents_router)
 
 @app.get("/health")
 def health_check():

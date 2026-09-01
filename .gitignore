@@ -42,3 +42,4 @@ Thumbs.db
 
 # Alembic
 backend/alembic/__pycache__/
+uploads/
