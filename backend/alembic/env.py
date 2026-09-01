@@ -8,6 +8,7 @@ from alembic import context
 from app.core.config import settings
 from app.core.database import Base
 from app.models.user import User
+from app.models.document import Document
 
 config = context.config
 
