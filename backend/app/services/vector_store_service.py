@@ -28,13 +28,21 @@ def search_documents(
     query_embedding: list[float],
     top_k: int = 5,
 ):
-    results = collection.query(
+    return collection.query(
         query_embeddings=[query_embedding],
         n_results=top_k,
     )
 
-    return results
-
 
 def delete_documents(ids: list[str]):
     collection.delete(ids=ids)
+
+
+def delete_document_chunks(document_id: int):
+    results = collection.get(
+        where={"document_id": document_id},
+        include=[]
+    )
+
+    if results["ids"]:
+        collection.delete(ids=results["ids"])
