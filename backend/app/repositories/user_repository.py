@@ -29,3 +29,16 @@ def create_user(
 
 def get_user_by_id(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
+
+def update_user_role(db: Session, user_id: int, role: str):
+    user = get_user_by_id(db, user_id)
+
+    if user is None:
+        return None
+
+    user.role = role
+
+    db.commit()
+    db.refresh(user)
+
+    return user
