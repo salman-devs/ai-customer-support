@@ -20,7 +20,23 @@ def build_context(documents: list[dict]) -> str:
     return "\n\n".join(context_parts)
 
 
-def ask_question(question: str, top_k: int = 5) -> dict:
+def build_conversation_context(messages: list) -> str:
+    if not messages:
+        return ""
+
+    messages = list(reversed(messages))
+
+    return "\n".join(
+        f"{message.role.upper()}: {message.content}"
+        for message in messages
+    )
+
+
+def ask_question(
+    question: str,
+    conversation_history: list | None = None,
+    top_k: int = 5,
+) -> dict:
     candidates = hybrid_search(
         query=question,
         top_k=10,
@@ -38,7 +54,6 @@ def ask_question(question: str, top_k: int = 5) -> dict:
             "sources": [],
         }
 
-    # Keep only sufficiently relevant documents.
     relevant_documents = [
         document
         for document in reranked_documents
@@ -51,11 +66,25 @@ def ask_question(question: str, top_k: int = 5) -> dict:
             "sources": [],
         }
 
-    context = build_context(relevant_documents)
+    document_context = build_context(relevant_documents)
+
+    conversation_context = build_conversation_context(
+        conversation_history or []
+    )
+
+    if conversation_context:
+        full_context = (
+            f"Conversation history:\n"
+            f"{conversation_context}\n\n"
+            f"Knowledge base:\n"
+            f"{document_context}"
+        )
+    else:
+        full_context = document_context
 
     answer = generate_answer(
         question=question,
-        context=context,
+        context=full_context,
     )
 
     sources = [
