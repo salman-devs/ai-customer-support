@@ -19,6 +19,9 @@ from app.services.evaluation_service import evaluate_case
 from app.services.evaluation_summary_service import (
     get_evaluation_summary,
 )
+from app.repositories.evaluation_result_repository import (
+    get_results_for_case,
+)
 
 
 router = APIRouter(
@@ -62,6 +65,31 @@ def evaluation_summary(
     db: Session = Depends(get_db),
 ):
     return get_evaluation_summary(db)
+
+@router.get(
+    "/{case_id}/results",
+    response_model=list[EvaluationResultResponse],
+)
+def get_case_results(
+    case_id: int,
+    current_user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    evaluation_case = get_evaluation_case_by_id(
+        db=db,
+        case_id=case_id,
+    )
+
+    if evaluation_case is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Evaluation case not found",
+        )
+
+    return get_results_for_case(
+        db=db,
+        evaluation_case_id=case_id,
+    )
 
 
 @router.get(

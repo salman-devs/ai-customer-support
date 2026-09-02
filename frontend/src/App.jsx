@@ -6,6 +6,7 @@ import Signup from "./pages/signup";
 import { useAuth } from "./context/AuthContext";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import EvaluationDashboard from "./pages/EvaluationDashboard";
 
 
 function ProtectedRoute({ children, adminOnly = false }) {
@@ -67,6 +68,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/evaluation"
+          element={
+            <ProtectedRoute adminOnly>
+              <EvaluationDashboard />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </BrowserRouter>
   );
