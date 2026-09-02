@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 import api from "../services/api";
@@ -6,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 
 function CustomerDashboard() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState([]);
@@ -14,9 +13,11 @@ function CustomerDashboard() {
   const [sessionId, setSessionId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+
   useEffect(() => {
     loadSessions();
   }, []);
+
 
   const loadSessions = async () => {
     try {
@@ -27,6 +28,7 @@ function CustomerDashboard() {
     }
   };
 
+
   const loadMessages = async (id) => {
     try {
       const response = await api.get(
@@ -34,22 +36,26 @@ function CustomerDashboard() {
       );
 
       setSessionId(id);
+
       setMessages(
         response.data.map((message) => ({
           role: message.role,
           content: message.content,
         }))
       );
+
     } catch (error) {
       console.error("Failed to load messages:", error);
     }
   };
+
 
   const startNewChat = () => {
     setSessionId(null);
     setMessages([]);
     setQuestion("");
   };
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -71,6 +77,7 @@ function CustomerDashboard() {
     setQuestion("");
     setLoading(true);
 
+
     try {
       const response = await api.post("/chat/", {
         question: userQuestion,
@@ -89,7 +96,9 @@ function CustomerDashboard() {
       ]);
 
       await loadSessions();
+
     } catch (error) {
+
       setMessages((previous) => [
         ...previous,
         {
@@ -99,96 +108,283 @@ function CustomerDashboard() {
             "Something went wrong. Please try again.",
         },
       ]);
+
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="dashboard">
 
-      <aside>
-        <button onClick={startNewChat}>
-          + New Chat
+  return (
+    <div className="customer-app">
+
+      {/* Sidebar */}
+
+      <aside className="chat-sidebar">
+
+        <div className="sidebar-header">
+
+          <div className="sidebar-brand">
+            <div className="brand-icon small">
+              ✦
+            </div>
+
+            <span>
+              AI Support
+            </span>
+          </div>
+
+        </div>
+
+
+        <button
+          className="new-chat-button"
+          onClick={startNewChat}
+        >
+          + New conversation
         </button>
 
-        <h3>Conversations</h3>
 
-        {sessions.map((session) => (
-          <button
-            key={session.id}
-            onClick={() => loadMessages(session.id)}
-          >
-            {session.title || "New Conversation"}
-          </button>
-        ))}
-      </aside>
+        <div className="conversation-section">
 
-      <section className="chat-section">
+          <p className="conversation-label">
+            Conversations
+          </p>
 
-        <header>
-          <h1>AI Customer Support</h1>
 
-          <button onClick={logout}>
-            Logout
-          </button>
-        </header>
+          <div className="conversation-list">
 
-        <main className="chat-container">
+            {sessions.length === 0 ? (
 
-          {messages.length === 0 && (
-            <div>
-              <h2>How can I help you?</h2>
-              <p>
-                Ask a question about our products or support policies.
+              <p className="empty-conversations">
+                No conversations yet
               </p>
-            </div>
-          )}
 
-          {messages.map((message, index) => (
-            <div key={index}>
+            ) : (
+
+              sessions.map((session) => (
+
+                <button
+                  key={session.id}
+                  className={
+                    session.id === sessionId
+                      ? "conversation active"
+                      : "conversation"
+                  }
+                  onClick={() => loadMessages(session.id)}
+                >
+                  {session.title || "New conversation"}
+                </button>
+
+              ))
+
+            )}
+
+          </div>
+
+        </div>
+
+
+        <div className="sidebar-footer">
+
+          <div className="user-info">
+
+            <div className="user-avatar">
+              {user?.name?.charAt(0)?.toUpperCase() || "U"}
+            </div>
+
+            <div>
+
               <strong>
-                {message.role === "user"
-                  ? "You"
-                  : "AI Assistant"}
+                {user?.name || "User"}
               </strong>
 
-              <p>{message.content}</p>
+              <span>
+                {user?.email || ""}
+              </span>
 
-              {message.sources?.length > 0 && (
-                <div>
-                  <strong>Sources:</strong>
-
-                  {message.sources.map((source, sourceIndex) => (
-                    <div key={sourceIndex}>
-                      {source.filename}
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
-          ))}
 
-          {loading && <p>AI is thinking...</p>}
+          </div>
+
+
+          <button
+            className="logout-button"
+            onClick={logout}
+          >
+            Logout
+          </button>
+
+        </div>
+
+      </aside>
+
+
+      {/* Main Chat */}
+
+      <section className="chat-main">
+
+        <header className="chat-header">
+
+          <div>
+            <h1>
+              AI Customer Support
+            </h1>
+
+            <p>
+              Ask questions about our products and support policies
+            </p>
+          </div>
+
+        </header>
+
+
+        <main className="messages-container">
+
+          {messages.length === 0 && (
+
+            <div className="welcome-message">
+
+              <div className="welcome-icon">
+                ✦
+              </div>
+
+              <h2>
+                How can we help?
+              </h2>
+
+              <p>
+                Ask a question about our products,
+                policies, or support documentation.
+              </p>
+
+            </div>
+
+          )}
+
+
+          <div className="messages">
+
+            {messages.map((message, index) => (
+
+              <div
+                key={index}
+                className={
+                  message.role === "user"
+                    ? "message user-message"
+                    : "message assistant-message"
+                }
+              >
+
+                <div className="message-avatar">
+                  {message.role === "user" ? "U" : "✦"}
+                </div>
+
+
+                <div className="message-content">
+
+                  <strong>
+                    {message.role === "user"
+                      ? "You"
+                      : "AI Assistant"}
+                  </strong>
+
+                  <p>
+                    {message.content}
+                  </p>
+
+
+                  {message.sources?.length > 0 && (
+
+                    <div className="sources">
+
+                      <span className="sources-title">
+                        Sources
+                      </span>
+
+                      {message.sources.map(
+                        (source, sourceIndex) => (
+
+                          <div
+                            className="source-item"
+                            key={sourceIndex}
+                          >
+                            {source.filename}
+                          </div>
+
+                        )
+                      )}
+
+                    </div>
+
+                  )}
+
+                </div>
+
+              </div>
+
+            ))}
+
+
+            {loading && (
+
+              <div className="message assistant-message">
+
+                <div className="message-avatar">
+                  ✦
+                </div>
+
+                <div className="message-content">
+
+                  <strong>
+                    AI Assistant
+                  </strong>
+
+                  <p className="thinking">
+                    Thinking...
+                  </p>
+
+                </div>
+
+              </div>
+
+            )}
+
+          </div>
 
         </main>
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Ask a question..."
-            value={question}
-            onChange={(event) => setQuestion(event.target.value)}
-            disabled={loading}
-          />
 
-          <button
-            type="submit"
-            disabled={loading}
-          >
-            Send
-          </button>
-        </form>
+        {/* Chat Input */}
+
+        <div className="chat-input-container">
+
+          <form onSubmit={handleSubmit}>
+
+            <input
+              type="text"
+              placeholder="Ask a question..."
+              value={question}
+              onChange={(event) =>
+                setQuestion(event.target.value)
+              }
+              disabled={loading}
+            />
+
+            <button
+              type="submit"
+              disabled={loading || !question.trim()}
+            >
+              Send
+            </button>
+
+          </form>
+
+          <p className="input-hint">
+            AI answers are generated from the support knowledge base.
+          </p>
+
+        </div>
 
       </section>
 
@@ -196,5 +392,5 @@ function CustomerDashboard() {
   );
 }
 
-export default CustomerDashboard;
 
+export default CustomerDashboard;
