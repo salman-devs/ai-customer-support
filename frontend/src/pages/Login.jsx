@@ -14,6 +14,7 @@ function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
@@ -26,7 +27,14 @@ function Login() {
 
       login(response.data.access_token);
 
-      navigate("/dashboard");
+      const userResponse = await api.get("/users/me");
+
+      if (userResponse.data.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+
     } catch (error) {
       setError(
         error.response?.data?.detail ||
@@ -35,11 +43,13 @@ function Login() {
     }
   };
 
+
   return (
     <div className="auth-page">
       <h1>Login</h1>
 
       <form onSubmit={handleSubmit}>
+
         <input
           type="email"
           placeholder="Email"
@@ -56,14 +66,21 @@ function Login() {
           required
         />
 
-        {error && <p>{error}</p>}
+        {error && (
+          <p className="error-message">
+            {error}
+          </p>
+        )}
 
         <button type="submit">
           Login
         </button>
+
       </form>
     </div>
   );
 }
 
+
 export default Login;
+

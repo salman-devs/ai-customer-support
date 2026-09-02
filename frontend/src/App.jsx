@@ -5,18 +5,26 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 import { useAuth } from "./context/AuthContext";
 import CustomerDashboard from "./pages/CustomerDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 
-function ProtectedRoute({ children }) {
-  const { isAuthenticated } = useAuth();
+function ProtectedRoute({ children, adminOnly = false }) {
+  const { isAuthenticated, user, loading } = useAuth();
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
+  if (adminOnly && user?.role !== "admin") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return children;
 }
-
 
 function Dashboard() {
   const { logout } = useAuth();
@@ -48,6 +56,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CustomerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />
