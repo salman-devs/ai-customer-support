@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 import api from "../services/api";
@@ -6,13 +5,15 @@ import { useAuth } from "../context/AuthContext";
 
 
 function AdminDashboard() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   const [documents, setDocuments] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
+
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+
 
   const loadDocuments = async () => {
     try {
@@ -26,9 +27,11 @@ function AdminDashboard() {
     }
   };
 
+
   useEffect(() => {
     loadDocuments();
   }, []);
+
 
   const handleUpload = async (event) => {
     event.preventDefault();
@@ -57,13 +60,14 @@ function AdminDashboard() {
       );
 
       setMessage(
-        `Document "${response.data.filename}" uploaded successfully.`
+        `"${response.data.filename}" uploaded successfully.`
       );
 
       setSelectedFile(null);
       event.target.reset();
 
       await loadDocuments();
+
     } catch (error) {
       setError(
         error.response?.data?.detail ||
@@ -73,6 +77,7 @@ function AdminDashboard() {
       setUploading(false);
     }
   };
+
 
   const handleDelete = async (documentId) => {
     const confirmed = window.confirm(
@@ -90,6 +95,7 @@ function AdminDashboard() {
       setError("");
 
       await loadDocuments();
+
     } catch (error) {
       setError(
         error.response?.data?.detail ||
@@ -98,35 +104,154 @@ function AdminDashboard() {
     }
   };
 
-  return (
-    <div className="admin-dashboard">
 
-      <header>
-        <div>
-          <h1>Admin Dashboard</h1>
-          <p>Manage customer-support documents</p>
+  const totalDocuments = documents.length;
+
+  const processedDocuments = documents.filter(
+    (document) => document.status === "processed"
+  ).length;
+
+  const failedDocuments = documents.filter(
+    (document) => document.status === "failed"
+  ).length;
+
+
+  return (
+    <div className="admin-app">
+
+      {/* Header */}
+
+      <header className="admin-header">
+
+        <div className="admin-brand">
+
+          <div className="brand-icon small">
+            ✦
+          </div>
+
+          <div>
+            <h1>AI Support Admin</h1>
+
+            <p>
+              Knowledge base management
+            </p>
+          </div>
+
         </div>
 
-        <button onClick={logout}>
-          Logout
-        </button>
+
+        <div className="admin-user">
+
+          <div>
+            <strong>
+              {user?.name || "Admin"}
+            </strong>
+
+            <span>
+              Administrator
+            </span>
+          </div>
+
+          <button onClick={logout}>
+            Logout
+          </button>
+
+        </div>
+
       </header>
 
-      <main>
 
-        <section className="upload-section">
-          <h2>Upload Document</h2>
+      <main className="admin-content">
 
-          <p>
-            Supported formats: PDF, DOCX, TXT. Maximum size: 10 MB.
-          </p>
+        {/* Page heading */}
 
-          <form onSubmit={handleUpload}>
+        <section className="admin-page-heading">
+
+          <div>
+            <h2>Dashboard</h2>
+
+            <p>
+              Manage the documents used by the AI support assistant.
+            </p>
+          </div>
+
+        </section>
+
+
+        {/* Statistics */}
+
+        <section className="stats-grid">
+
+          <div className="stat-card">
+
+            <span className="stat-label">
+              Total documents
+            </span>
+
+            <strong className="stat-value">
+              {totalDocuments}
+            </strong>
+
+          </div>
+
+
+          <div className="stat-card">
+
+            <span className="stat-label">
+              Processed
+            </span>
+
+            <strong className="stat-value">
+              {processedDocuments}
+            </strong>
+
+          </div>
+
+
+          <div className="stat-card">
+
+            <span className="stat-label">
+              Failed
+            </span>
+
+            <strong className="stat-value">
+              {failedDocuments}
+            </strong>
+
+          </div>
+
+        </section>
+
+
+        {/* Upload */}
+
+        <section className="admin-card">
+
+          <div className="card-heading">
+
+            <div>
+              <h2>Upload document</h2>
+
+              <p>
+                Add support documentation to the AI knowledge base.
+              </p>
+            </div>
+
+          </div>
+
+
+          <form
+            className="upload-form"
+            onSubmit={handleUpload}
+          >
+
             <input
               type="file"
               accept=".pdf,.docx,.txt"
               onChange={(event) => {
                 setSelectedFile(event.target.files[0]);
+                setError("");
+                setMessage("");
               }}
             />
 
@@ -134,70 +259,159 @@ function AdminDashboard() {
               type="submit"
               disabled={uploading}
             >
-              {uploading ? "Uploading..." : "Upload"}
+              {uploading ? "Processing..." : "Upload document"}
             </button>
+
           </form>
 
+
+          <p className="upload-help">
+            PDF, DOCX and TXT files • Maximum size: 10 MB
+          </p>
+
+
           {message && (
-            <p className="success-message">
+            <div className="success-message">
               {message}
-            </p>
-          )}
-
-          {error && (
-            <p className="error-message">
-              {error}
-            </p>
-          )}
-        </section>
-
-        <section className="documents-section">
-          <h2>Documents</h2>
-
-          {documents.length === 0 ? (
-            <p>No documents uploaded yet.</p>
-          ) : (
-            <div className="document-list">
-
-              {documents.map((document) => (
-                <div
-                  className="document-card"
-                  key={document.id}
-                >
-                  <div>
-                    <h3>{document.filename}</h3>
-
-                    <p>
-                      Type: {document.file_type.toUpperCase()}
-                    </p>
-
-                    <p>
-                      Size:{" "}
-                      {(document.file_size / 1024).toFixed(1)} KB
-                    </p>
-
-                    <p>
-                      Status:{" "}
-                      <strong>{document.status}</strong>
-                    </p>
-
-                    {document.error_message && (
-                      <p>
-                        Error: {document.error_message}
-                      </p>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={() => handleDelete(document.id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-
             </div>
           )}
+
+
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+
+        </section>
+
+
+        {/* Documents */}
+
+        <section className="admin-card">
+
+          <div className="card-heading">
+
+            <div>
+              <h2>Documents</h2>
+
+              <p>
+                Documents currently available to the AI assistant.
+              </p>
+            </div>
+
+          </div>
+
+
+          {documents.length === 0 ? (
+
+            <div className="empty-documents">
+              <div className="empty-icon">
+                📄
+              </div>
+
+              <h3>No documents yet</h3>
+
+              <p>
+                Upload your first support document to build the
+                knowledge base.
+              </p>
+            </div>
+
+          ) : (
+
+            <div className="document-table-wrapper">
+
+              <table className="document-table">
+
+                <thead>
+
+                  <tr>
+                    <th>Document</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  {documents.map((document) => (
+
+                    <tr key={document.id}>
+
+                      <td>
+
+                        <div className="document-name">
+
+                          <div className="file-icon">
+                            📄
+                          </div>
+
+                          <div>
+                            <strong>
+                              {document.filename}
+                            </strong>
+
+                            <span>
+                              Document #{document.id}
+                            </span>
+                          </div>
+
+                        </div>
+
+                      </td>
+
+
+                      <td>
+                        {document.file_type.toUpperCase()}
+                      </td>
+
+
+                      <td>
+                        {(document.file_size / 1024).toFixed(1)} KB
+                      </td>
+
+
+                      <td>
+
+                        <span
+                          className={`status-badge ${document.status}`}
+                        >
+                          {document.status}
+                        </span>
+
+                      </td>
+
+
+                      <td>
+
+                        <button
+                          className="delete-button"
+                          onClick={() =>
+                            handleDelete(document.id)
+                          }
+                        >
+                          Delete
+                        </button>
+
+                      </td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          )}
+
         </section>
 
       </main>
@@ -206,5 +420,5 @@ function AdminDashboard() {
   );
 }
 
-export default AdminDashboard;
 
+export default AdminDashboard;

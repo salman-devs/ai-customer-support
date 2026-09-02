@@ -672,3 +672,372 @@ header button {
   }
 }
 
+/* =========================
+   Admin Dashboard
+========================= */
+
+.admin-app {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+
+.admin-header {
+  min-height: 72px;
+  padding: 14px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+
+.admin-brand .brand-icon {
+  margin: 0;
+}
+
+
+.admin-brand h1 {
+  font-size: 17px;
+}
+
+
+.admin-brand p {
+  margin-top: 3px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+
+.admin-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+
+.admin-user strong {
+  display: block;
+  font-size: 13px;
+  text-align: right;
+}
+
+
+.admin-user span {
+  display: block;
+  margin-top: 2px;
+  color: #6b7280;
+  font-size: 11px;
+  text-align: right;
+}
+
+
+.admin-user button {
+  padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+}
+
+
+.admin-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 35px 30px;
+}
+
+
+.admin-page-heading {
+  margin-bottom: 25px;
+}
+
+
+.admin-page-heading h2 {
+  font-size: 26px;
+}
+
+
+.admin-page-heading p {
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+
+/* Statistics */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+
+.stat-card {
+  padding: 22px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+
+.stat-label {
+  display: block;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+
+.stat-value {
+  display: block;
+  margin-top: 8px;
+  font-size: 28px;
+}
+
+
+/* Cards */
+
+.admin-card {
+  margin-bottom: 25px;
+  padding: 25px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+
+.card-heading {
+  margin-bottom: 20px;
+}
+
+
+.card-heading h2 {
+  font-size: 18px;
+}
+
+
+.card-heading p {
+  margin-top: 5px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+
+/* Upload */
+
+.upload-form {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+.upload-form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+}
+
+
+.upload-form button {
+  padding: 11px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #111827;
+  color: white;
+  font-weight: 600;
+}
+
+
+.upload-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+.upload-help {
+  margin-top: 10px;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+
+/* Messages */
+
+.success-message {
+  margin-top: 15px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 13px;
+}
+
+
+/* Documents */
+
+.document-table-wrapper {
+  overflow-x: auto;
+}
+
+
+.document-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+.document-table th {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: left;
+}
+
+
+.document-table td {
+  padding: 15px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+
+.document-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.file-icon {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+
+
+.document-name strong {
+  display: block;
+}
+
+
+.document-name span {
+  display: block;
+  margin-top: 3px;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+
+.status-badge.processed {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+
+.status-badge.failed {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+
+.status-badge.pending {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+
+.delete-button {
+  padding: 7px 11px;
+  border: 1px solid #fecaca;
+  border-radius: 7px;
+  background: white;
+  color: #b91c1c;
+  font-size: 12px;
+}
+
+
+.delete-button:hover {
+  background: #fef2f2;
+}
+
+
+/* Empty state */
+
+.empty-documents {
+  padding: 45px 20px;
+  text-align: center;
+}
+
+
+.empty-icon {
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+
+.empty-documents h3 {
+  font-size: 16px;
+}
+
+
+.empty-documents p {
+  margin-top: 5px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+
+/* Responsive */
+
+@media (max-width: 700px) {
+
+  .admin-header {
+    padding: 14px 18px;
+  }
+
+  .admin-content {
+    padding: 25px 18px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-user > div {
+    display: none;
+  }
+
+}
