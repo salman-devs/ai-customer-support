@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers import auth, users, documents, chat
-
+from app.routers import auth, users, documents, chat, evaluation
 
 app = FastAPI(
     title="AI Customer Support API",
@@ -28,7 +28,7 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(documents.router)
 app.include_router(chat.router)
-
+app.include_router(evaluation.router)
 
 @app.get("/")
 def root():
