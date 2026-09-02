@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
+from pathlib import Path
 
 from app.core.database import get_db
 from app.core.rbac import require_role
@@ -11,6 +12,7 @@ from app.repositories.document_repository import (
     get_all_documents,
     get_document_by_id
 )
+from app.repositories.document_repository import delete_document
 
 
 router = APIRouter(
@@ -71,3 +73,29 @@ def get_document(
         )
 
     return document
+
+@router.delete("/{document_id}")
+def remove_document(
+    document_id: int,
+    current_user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db)
+):
+    document = get_document_by_id(db, document_id)
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found"
+        )
+
+    file_path = Path(document.file_path)
+
+    if file_path.exists():
+        file_path.unlink()
+
+    delete_document(db, document)
+
+    return {
+        "message": "Document deleted successfully",
+        "document_id": document_id
+    }
