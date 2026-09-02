@@ -5,43 +5,213 @@
   box-sizing: border-box;
 }
 
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: Inter, Arial, sans-serif;
   background: #f5f7fb;
-  color: #1f2937;
+  color: #111827;
 }
+
 
 button,
 input {
   font: inherit;
 }
 
+
 button {
   cursor: pointer;
 }
+
+
+/* =========================
+   Authentication
+========================= */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #f5f7fb;
+}
+
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+
+.brand-icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: #111827;
+  color: white;
+  font-size: 26px;
+}
+
+
+.auth-brand h1 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+
+.auth-brand p {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+.auth-content h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+
+.auth-subtitle {
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+
+.form-group label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+.form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+
+.form-group input:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+}
+
+
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 4px;
+  border: none;
+  border-radius: 8px;
+  background: #111827;
+  color: white;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+
+.auth-button:hover {
+  opacity: 0.9;
+}
+
+
+.auth-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+.error-message {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+
+.auth-footer {
+  margin-top: 24px;
+  text-align: center;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+
+.auth-footer a {
+  color: #111827;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================
+   Customer Dashboard
+========================= */
 
 .dashboard {
   min-height: 100vh;
   display: flex;
 }
 
+
 aside {
   width: 260px;
   padding: 20px;
   background: white;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+
 aside button {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #e5e7eb;
   background: white;
-  border-radius: 6px;
+  border-radius: 8px;
   text-align: left;
 }
+
+
+aside button:hover {
+  background: #f9fafb;
+}
+
 
 .chat-section {
   flex: 1;
@@ -50,18 +220,24 @@ aside button {
   min-height: 100vh;
 }
 
+
 header {
-  padding: 20px;
+  padding: 20px 24px;
   background: white;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+
 header button {
   padding: 8px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
 }
+
 
 .chat-container {
   flex: 1;
@@ -69,30 +245,52 @@ header button {
   overflow-y: auto;
 }
 
+
 .chat-container > div {
   margin-bottom: 20px;
 }
+
 
 .chat-container p {
   margin-top: 6px;
   line-height: 1.5;
 }
 
+
 .chat-section form {
   display: flex;
   gap: 10px;
   padding: 20px;
   background: white;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #e5e7eb;
 }
+
 
 .chat-section input {
   flex: 1;
   padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
 }
+
 
 .chat-section form button {
   padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #111827;
+  color: white;
 }
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 600px) {
+  .auth-card {
+    padding: 28px 22px;
+  }
+}
+
