@@ -4,6 +4,9 @@ from pathlib import Path
 from docx import Document as DocxDocument
 from pypdf import PdfReader
 
+from app.services.embedding_service import generate_embeddings
+from app.services.vector_store_service import add_documents
+
 
 def extract_text(file_path: str, file_type: str) -> str:
     if file_type == "pdf":
@@ -100,3 +103,53 @@ def create_chunk_metadata(
         })
 
     return chunk_data
+
+
+def process_document(
+    file_path: str,
+    file_type: str,
+    document_id: int,
+    filename: str
+):
+    text = extract_text(file_path, file_type)
+
+    if not text:
+        raise ValueError("Document contains no extractable text")
+
+    chunks = chunk_text(text)
+
+    embeddings = generate_embeddings(chunks)
+
+    chunk_data = create_chunk_metadata(
+        chunks=chunks,
+        document_id=document_id,
+        filename=filename
+    )
+
+    ids = [
+        f"document-{document_id}-chunk-{chunk['chunk_index']}"
+        for chunk in chunk_data
+    ]
+
+    documents = [
+        chunk["text"]
+        for chunk in chunk_data
+    ]
+
+    metadatas = [
+        chunk["metadata"]
+        for chunk in chunk_data
+    ]
+
+    add_documents(
+        ids=ids,
+        documents=documents,
+        embeddings=embeddings,
+        metadatas=metadatas
+    )
+
+    return {
+        "document_id": document_id,
+        "filename": filename,
+        "chunks_created": len(chunks)
+    }
