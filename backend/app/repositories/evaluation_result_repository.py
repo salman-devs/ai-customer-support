@@ -9,12 +9,16 @@ def create_evaluation_result(
     generated_answer: str,
     retrieval_relevant: bool | None,
     latency_ms: float,
+    answer_similarity: float,
+    answer_correct: bool,
 ):
     result = EvaluationResult(
         evaluation_case_id=evaluation_case_id,
         generated_answer=generated_answer,
         retrieval_relevant=retrieval_relevant,
         latency_ms=latency_ms,
+        answer_similarity=answer_similarity,
+        answer_correct= answer_correct,
     )
 
     db.add(result)

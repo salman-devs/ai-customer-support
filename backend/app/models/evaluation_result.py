@@ -25,3 +25,5 @@ class EvaluationResult(Base):
         DateTime(timezone=True),
         server_default=func.now(),
     )
+    answer_similarity = Column(Float, nullable=False)
+    answer_correct = Column(Boolean, nullable=False)

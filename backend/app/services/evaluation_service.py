@@ -1,9 +1,20 @@
 import time
 
+from sqlalchemy.orm import Session
+
+from app.repositories.evaluation_result_repository import (
+    create_evaluation_result,
+)
+from app.services.answer_evaluation_service import (
+    calculate_answer_similarity,
+    is_answer_correct,
+)
 from app.services.rag_service import ask_question
 
 
 def evaluate_case(
+    db: Session,
+    evaluation_case_id: int,
     question: str,
     expected_answer: str,
     expected_document: str | None = None,
@@ -31,11 +42,24 @@ def evaluate_case(
             expected_document in retrieved_filenames
         )
 
-    return {
-        "question": question,
-        "expected_answer": expected_answer,
-        "generated_answer": result["answer"],
-        "retrieved_documents": retrieved_documents,
-        "retrieval_relevant": retrieval_relevant,
-        "latency_ms": round(latency_ms, 2),
-    }
+    answer_similarity = calculate_answer_similarity(
+        generated_answer=result["answer"],
+        expected_answer=expected_answer,
+    )
+
+    answer_correct = is_answer_correct(
+        generated_answer=result["answer"],
+        expected_answer=expected_answer,
+    )
+
+    evaluation_result = create_evaluation_result(
+        db=db,
+        evaluation_case_id=evaluation_case_id,
+        generated_answer=result["answer"],
+        retrieval_relevant=retrieval_relevant,
+        answer_similarity=answer_similarity,
+        answer_correct=answer_correct,
+        latency_ms=latency_ms,
+    )
+
+    return evaluation_result

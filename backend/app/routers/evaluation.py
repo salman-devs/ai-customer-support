@@ -14,6 +14,8 @@ from app.schemas.evaluation import (
     EvaluationCaseCreate,
     EvaluationCaseResponse,
 )
+from app.schemas.evaluation_result import EvaluationResultResponse
+from app.services.evaluation_service import evaluate_case
 
 
 router = APIRouter(
@@ -72,6 +74,35 @@ def get_case(
         )
 
     return evaluation_case
+
+
+@router.post(
+    "/{case_id}/run",
+    response_model=EvaluationResultResponse,
+)
+def run_evaluation(
+    case_id: int,
+    current_user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    evaluation_case = get_evaluation_case_by_id(
+        db=db,
+        case_id=case_id,
+    )
+
+    if evaluation_case is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Evaluation case not found",
+        )
+
+    return evaluate_case(
+        db=db,
+        evaluation_case_id=evaluation_case.id,
+        question=evaluation_case.question,
+        expected_answer=evaluation_case.expected_answer,
+        expected_document=evaluation_case.expected_document,
+    )
 
 
 @router.delete("/{case_id}")
