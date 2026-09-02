@@ -8,9 +8,11 @@ class EvaluationResultResponse(BaseModel):
     evaluation_case_id: int
     generated_answer: str
     retrieval_relevant: bool | None
-    latency_ms: float
-    created_at: datetime
     answer_similarity: float
     answer_correct: bool
+    faithfulness_score: float
+    faithful: bool
+    latency_ms: float
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

@@ -19,11 +19,17 @@ class EvaluationResult(Base):
 
     retrieval_relevant = Column(Boolean, nullable=True)
 
+    answer_similarity = Column(Float, nullable=False)
+
+    answer_correct = Column(Boolean, nullable=False)
+
+    faithfulness_score = Column(Float, nullable=False)
+
+    faithful = Column(Boolean, nullable=False)
+
     latency_ms = Column(Float, nullable=False)
 
     created_at = Column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
-    answer_similarity = Column(Float, nullable=False)
-    answer_correct = Column(Boolean, nullable=False)

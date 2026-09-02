@@ -16,6 +16,9 @@ from app.schemas.evaluation import (
 )
 from app.schemas.evaluation_result import EvaluationResultResponse
 from app.services.evaluation_service import evaluate_case
+from app.services.evaluation_summary_service import (
+    get_evaluation_summary,
+)
 
 
 router = APIRouter(
@@ -51,6 +54,14 @@ def list_cases(
     db: Session = Depends(get_db),
 ):
     return get_all_evaluation_cases(db)
+
+
+@router.get("/summary")
+def evaluation_summary(
+    current_user: User = Depends(require_role("admin")),
+    db: Session = Depends(get_db),
+):
+    return get_evaluation_summary(db)
 
 
 @router.get(
